@@ -62,7 +62,7 @@
         </div>
 
         <!-- Writing Form -->
-        <form id="postForm" class="space-y-6">
+        <form id="postForm" class="space-y-6" method="post" action="/post_blog" enctype="multipart/form-data">
             <!-- Title Input -->
             <div class="bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-6">
                 <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Article Title</label>
@@ -276,9 +276,12 @@
                 <button type="button" id="previewBtnBottom" class="border-2 border-sky-500 text-sky-600 hover:bg-sky-50 px-8 py-3 rounded-lg font-medium transition-colors">
                     Preview Post
                 </button>
-                <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white px-8 py-3 rounded-lg font-medium transition-colors">
+                <button id="publishPostBtn" type="submit" class="bg-sky-500 hover:bg-sky-600 text-white px-8 py-3 rounded-lg font-medium transition-colors">
                     Publish Post
                 </button>
+
+                <input type="hidden" name="hiddenContent" id="hiddenContent">
+
             </div>
         </form>
     </main>
@@ -583,6 +586,11 @@
                 localStorage.removeItem('blogDraft');
                 publishBtn.textContent = originalText;
                 publishBtn.disabled = false;
+
+                // publishPostBtn.submit(); //Actually submit the form
+                document.getElementById('hiddenContent').value = contentEditor.innerHTML;
+                postForm.submit(); // Actually submit the form
+
             }, 2000);
         });
 

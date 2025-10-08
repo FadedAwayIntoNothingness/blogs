@@ -5,7 +5,13 @@ const db = require('../db');
 const bcrypt = require('bcrypt');
 
 router.get('/', (req, res) => {
-    res.render('index', {user: req.session.user});
+    db.query('SELECT * FROM blog ORDER BY idblog DESC', (err, results) => {
+        if (err) {
+            console.error('Error fetching blogs:', err);
+            return res.status(500).send('Internal server error');
+        }
+        res.render('index', { user: req.session.user, blogs: results });
+    });
 });
 
 router.get('/login', (req, res) => {
@@ -71,11 +77,18 @@ router.post('/login', (req, res) => {
             req.session.user = results[0].email; // Store user info in session
 
             // Authentication successful
-            console.log('Session user:', req.session.user);+
+            console.log('Session user:', req.session.user);
+            console.log('Session ID:', req.sessionID);
             console.log('User logged in successfully:', results[0]);
             res.redirect('/blogs'); // Redirect to a protected route after login
         }
     });
 })
+
+router.get('/logout', (req, res) => {
+    req.session.destroy( () => {
+        res.redirect('/login');
+    });
+});
 
 module.exports = router;
